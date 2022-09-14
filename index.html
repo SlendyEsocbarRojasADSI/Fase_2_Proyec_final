@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<html>
+<head>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <title>Semana_p</title>
+</head>
+
+<body>
+
+    
+    <div class="head">
+        <div class="logo">
+            <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sena_Colombia_logo.svg/2090px-Sena_Colombia_logo.svg.png" width="57px"></a>
+        </div>
+    </div>
+
+    <br>
+    <header class="content-header">
+        <h2>Bienvenidos</h2>
+        <p>Bienvenidos a esta pagina donde encontraras un lente que es capaz de leer algunos residuos reciclables</p>
+    </header>
+
+    <p>--------------------------------------------------------------------------------------------------------------------------------------</p>
+    <br>
+    <section class="content-sau">
+        <h2 class="title">Informacion de las cajas</h2>
+        <h3>No aprovechable(caja-negra)</h3>
+        <p>unos ejemplos de recursos no aprovechables seria, el papel higienico, servilletas,papeles, cartones los cuales estan contaminados con comida y papeles metalizados.</p>
+
+        <p>Por lo general, no son reciclables los siguientes tipos de papeles: Papel de fax y carbónico, papeles plastificados, celofán, envases de comida, servilletas y papel de cocina, vasos usados, papel de fotos y etiquetas. Vidrios: Cuentan entre sus materias primas con sílice, alcaloides y estabilizantes</p>
+
+        <div class="box">
+          <i class="fab fa-angular"></i>
+            <h3>Residuos Organicos Aprovechables(caja verde)</h3>
+            <p>aqui irian los residuos organicos , como lo son los restos de la comida y  desechos agricolas.</p>
+            
+        </div>
+        <div class="box">
+          <i class="fab fa-apple"></i>
+          <h3>Residuos Aprovechables(Caneca blanca)</h3>
+          <p>algunos ejemplos de estos lo son como el plastico,vidrio,metales,multicapa,papel y carton.</p>
+          
+        </div>
+    </section>
+
+    <script type="text/javascript">
+        // Classifier Variable
+        let classifier;
+        // Model URL
+        let imageModelURL = 'https://teachablemachine.withgoogle.com/models/3F1JWmljZ/';
+        
+        // Video
+        let video;
+        let flippedVideo;
+        // To store the classification
+        let label = "Esperando....😴";
+
+        
+      
+        // Load the model first
+        function preload() {
+          classifier = ml5.imageClassifier(imageModelURL + 'model.json');
+        }
+      
+        function setup() {
+          createCanvas(320, 260);
+          // Create the video
+          video = createCapture(VIDEO);
+          video.size(420, 340);
+          video.hide();
+      
+          flippedVideo = ml5.flipImage(video);
+          // Start classifying
+          classifyVideo();
+        }
+      
+        function draw() {
+          background(0);
+          // Draw the video
+          image(flippedVideo, 0, 0);
+      
+          // Draw the label
+          fill(255);
+          textSize(16);
+          textAlign(CENTER);
+          text(label, width / 2, height - 4);
+          let emoji=""
+          let mensaje=""
+          if(label=="Aprovechables-Caneca Blanca"){
+            emoji="⚪"
+          }
+          if(label=="Orgánicos-Caneca Verde"){
+            emoji="🟢"
+          }
+          if(label=="No aprovechables-Caneca Negra"){
+            emoji="⚫"
+          }
+          textSize(116);
+          text(emoji,width/2,height/ 2);
+          textSize(32)
+
+        }
+
+        
+        
+      
+        // Get a prediction for the current video frame
+        function classifyVideo() {
+          flippedVideo = ml5.flipImage(video)
+          classifier.classify(flippedVideo, gotResult);
+          flippedVideo.remove();
+      
+        }
+      
+        // When we get a result
+        function gotResult(error, results) {
+          // If there is an error
+          if (error) {
+            console.error(error);
+            return;
+          }
+          // The results are in an array ordered by confidence.
+          // console.log(results[0]);
+          label = results[0].label;
+          // Classifiy again!
+          classifyVideo();
+        }
+      </script>
+
+    
+
+
+    <br>
+ 
+</body>
+</html>
